@@ -1,6 +1,14 @@
 ---
 title: "PA1 Analysis of Activity Monitoring Data"
 output: html_document
+author: "XXXX"
+
+date: "December 30, 2018"
+fig_caption: yes
+toc: yes
+pdf_document: default
+keep_md: yes
+self_contained: no
 ---
 
 ##Loading and preprocessing the data
