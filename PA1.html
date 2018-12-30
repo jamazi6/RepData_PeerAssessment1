@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="XXXX" />
+
+<meta name="date" content="2018-12-30" />
+
+<title>PA1 Analysis of Activity Monitoring Data</title>
+
+<script src="PA1_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="PA1_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="PA1_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="PA1_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="PA1_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="PA1_files/navigation-1.1/tabsets.js"></script>
+<link href="PA1_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="PA1_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">PA1 Analysis of Activity Monitoring Data</h1>
+<h4 class="author"><em>XXXX</em></h4>
+<h4 class="date"><em>December 30, 2018</em></h4>
+
+</div>
+
+<div id="TOC">
+true
+</div>
+
+<div id="loading-and-preprocessing-the-data" class="section level2">
+<h2>Loading and preprocessing the data</h2>
+<p>The following is an analysis of activity monitoring data. The dataset includes two months of activity data in which each day is split into 5-minutes intervals.</p>
+<p>For each 5-minute interval, the number of steps taken by an individual is recorded. To read-in the data, and load a few R packages we’ll need for our analysis, we made sure the dataset was unzipped and included in our working directory, then ran the following script:</p>
+<pre class="r"><code>library(knitr)
+library(ggplot2)
+library(dplyr)
+library(lattice)
+
+activity &lt;- read.csv(&quot;activity.csv&quot;, header=TRUE)</code></pre>
+<p>Let’s take a look at the dataset using the head() function</p>
+<pre class="r"><code>head(activity)</code></pre>
+<pre><code>##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25</code></pre>
+<p>It looks like we have a date column, so let’s make sure R recognizes that data as date entries:</p>
+<pre class="r"><code>activity$date &lt;- as.Date(as.character(activity$date))</code></pre>
+</div>
+<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
+<h2>What is mean total number of steps taken per day?</h2>
+<p>Now for the first step in our analysis. We would like to know the mean total number of steps taken per day. That means we need to total (sum) the steps taken on each day, then average (mean) the totals. Let’s use the aggregate() function dy date to get the total number of steps for each day, then visualize that data in a histogram.</p>
+<pre class="r"><code>activityByDate &lt;- aggregate(activity[c(&quot;steps&quot;)], by=list(date=activity$date), sum)</code></pre>
+<pre class="r"><code>hist(activityByDate$steps, breaks = 25, xlab=&quot;Steps per Day&quot;, main = &quot;Distribution of Steps per Day&quot;, col=&quot;blue&quot;)</code></pre>
+<p><img src="PA1_files/figure-html/Plot_By_Day-1.png" width="672" /></p>
+<p>It looks like the most common values are just over 10,000 steps per day. Let’s see if the average is around there too with median() and mean().</p>
+<pre class="r"><code>meanStepsPerDay &lt;- as.integer(mean(activityByDate$steps, na.rm=TRUE))
+medianStepsPerDay &lt;- median(activityByDate$steps, na.rm=TRUE)</code></pre>
+<p>The mean is 10766 and the median is 10765.</p>
+</div>
+<div id="what-is-the-average-daily-activity-pattern" class="section level2">
+<h2>What is the average daily activity pattern?</h2>
+<p>Next, we’d like to get a picture of average (mean) activity over the course of the day, so we need to aggregate based on time interval, taking the average number of steps in each time interval throughout the day. We’ll also create a line chart displaying the data.</p>
+<pre class="r"><code>activity_na_rm &lt;- activity[!is.na(activity$steps),] #remove NA values
+activityByTime &lt;- aggregate(activity_na_rm[c(&quot;steps&quot;)], by=list(interval=activity_na_rm$interval), mean, na.action=na.omit)
+qplot(interval, steps, data=activityByTime, main=&quot;Average Steps by Time Interval&quot;) +geom_line(color=&quot;blue&quot;)</code></pre>
+<p><img src="PA1_files/figure-html/Aggregate_By_Time-1.png" width="672" /></p>
+<p>You may have noticed some NA values when we showed a preview of the data, so we removed those for now to aggregate by time interval.</p>
+<p>You might be wondering which time interval tends to have the greatest number of steps (what’s that big spike in the graph around interval 800?), so let’s calculate the maximum average steps for the time periods in our dataset.</p>
+<pre class="r"><code>maxStepsForInterval &lt;- max(activityByTime$steps)
+highestInterval &lt;- activityByTime[activityByTime$steps==maxStepsForInterval,]</code></pre>
+<p>It looks like the highest average steps for one interval is 206.1698113 which is the average for interval 835</p>
+</div>
+<div id="imputing-missing-values" class="section level2">
+<h2>Imputing missing values</h2>
+<p>We initially removed NA values so we could calculate the mean number of steps for each time interval, but now we’d like to address them. The total number of NA values for steps in our dataset is 2304. I think the best value we could use to replace them is the average number of steps for whatever time interval they fall in. Let’s give that a shot by looping through our data, checking if values are NA, then replacing them based on their time interval.</p>
+<pre class="r"><code>totalNAs &lt;- sum(is.na(activity$steps))
+activity_na_filled &lt;- activity
+for (row in 1:nrow(activity_na_filled)){
+    interval &lt;- activity_na_filled$interval[row]
+    steps &lt;- activity_na_filled$steps[row]
+    if(is.na(steps)){
+        activity_na_filled$steps[row] &lt;- activityByTime[activityByTime$interval==interval,]$steps
+    }
+    else{activity_na_filled$steps[row] &lt;- activity_na_filled$steps[row]}
+}</code></pre>
+<p>Now that we’ve replaced NA values with averages for their time interval, lets make another histogram of average total steps per day with our modified dataset.</p>
+<pre class="r"><code>NewActivityByDate &lt;- aggregate(activity_na_filled[c(&quot;steps&quot;)], by=list(date=activity_na_filled$date), sum)
+#create histogram of data by date
+hist(NewActivityByDate$steps, breaks = 25, xlab=&quot;Steps per Day&quot;, main = &quot;New Distribution of Steps per Day&quot;, col=&quot;blue&quot;)</code></pre>
+<p><img src="PA1_files/figure-html/Histogram_with_NAs_Replaced-1.png" width="672" /></p>
+<p>It looks like the only difference is the number of values between 10,000 and 11,000. This makes sense because we added a bunch of additional average values and the mean total steps per day was 10,766 the last time we calculated it. Let’s try calculating the mean and median of total steps per day for our new dataset.</p>
+<pre class="r"><code>NewmeanStepsPerDay &lt;- mean(NewActivityByDate$steps)
+NewmedianStepsPerDay &lt;- median(NewActivityByDate$steps)</code></pre>
+<p>The new mean is 1.076618910^{4} and the new median is 1.076618910^{4} so not much has changed.</p>
+</div>
+<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
+<h2>Are there differences in activity patterns between weekdays and weekends?</h2>
+<p>For our last round of analysis, we’d like to identify any differences between patterns of activity on weekends and weekdays. To do this, first we’ll have to identify which of our dates fall on the weekends, and which fall on weekdays using the weekdays() function. Then we create a new factor variable and assign it either “weekend” or “weekday”.</p>
+<pre class="r"><code>activity &lt;- mutate(activity, weekend=(weekdays(date)==&quot;Saturday&quot;| weekdays(date)==&quot;Sunday&quot;))
+assign_weekend &lt;- function(x){
+    if(x==TRUE) x &lt;- &quot;weekend&quot;
+    else x &lt;- &quot;weekday&quot;
+}
+for(i in 1:nrow(activity)){activity$weekend[i] &lt;- assign_weekend(activity$weekend[i])}
+activity$weekend &lt;- as.factor(activity$weekend)</code></pre>
+<p>Finally, let’s plot the averages of the two categories of activity (weekend and weekday) and look for differences in the daily activity.</p>
+<pre class="r"><code>activity_na_rm &lt;- activity[!is.na(activity$steps),] #remove NA values
+activityByTime_day &lt;- aggregate(activity_na_rm[c(&quot;steps&quot;)], by=list(interval=activity_na_rm$interval, weekend=activity_na_rm$weekend), mean, na.action=na.omit)
+
+xyplot(steps~interval | weekend, data=activityByTime_day, layout=c(1,2), type=&quot;l&quot;)</code></pre>
+<p><img src="PA1_files/figure-html/Plot_Weekend_Weekday_Data-1.png" width="672" /></p>
+<p>It looks like there’s a sharp spike in the average number of steps around interval 800 which is less prominent on the weekend. The subjects of our data could have some extra walking in their commute to work. Significant activity also begins later on the weekend, so our subjects may sleep in on the weekends.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
